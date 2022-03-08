@@ -1,10 +1,8 @@
 import serial
-import pynmea2
 import time
 import json
 import requests 
 import math
-import decimal
 
 
 pi = 3.141592653589793234
@@ -14,11 +12,16 @@ ob = 0.00669342162296594323
 
 
 def wgs84_gcj02(lng_wgs84, lat_wgs84):
+
+    def lng_lat_convert(lng_lat_data):
+        lng_lat_data = float(lng_lat_data) / 100.0
+        lng_lat_data = int(lng_lat_data) + (lng_lat_data - int(lng_lat_data)) * 100.0 / 60.0 
+        return lng_lat_data
     
-    def judge_China(j_lng, j_lat):
-        if j_lng < 70 or j_lng > 140:
+    def judge_China(lng, lat):
+        if lng < 70 or lng > 140:
             return True
-        if j_lat < 0 or j_lat > 55:
+        if lat < 0 or lat > 55:
             return True      
         return False
 
@@ -36,6 +39,8 @@ def wgs84_gcj02(lng_wgs84, lat_wgs84):
         r += (150.0 * math.sin(lng / 12.0 * pi) + 300.0 * math.sin(lng / 30.0 * pi)) * 2.0 / 3.0
         return r
 
+    lng_wgs84 = lng_lat_convert(lng_wgs84)
+    lat_wgs84 = lng_lat_convert(lat_wgs84)
 
     if judge_China(lng_wgs84, lat_wgs84):
         return [lng_wgs84, lat_wgs84]
@@ -52,20 +57,15 @@ def wgs84_gcj02(lng_wgs84, lat_wgs84):
     lng_gcj02 = lng_wgs84 + tlng
     return [lng_gcj02, lat_gcj02]
 
-def lat_lng_convert(lat_lng_data):
-    lat_lng_data = float(lat_lng_data) / 100.0
-    lat_lng_data = int(lat_lng_data) + (lat_lng_data - int(lat_lng_data)) * 100.0 / 60.0 
-    return lat_lng_data
 
-
-ser = serial.Serial("/dev/ttyUSB0", 9600 )  
+ser = serial.Serial("/dev/ttyUSB0", 9600 ) 
 while(True):
         dataList = str(ser.readline())[2:][:-5].split(',')
         if '$GNRMC' in dataList:
 
-           gcj02_lng = wgs84_gcj02(lat_lng_convert(dataList[5]),lat_lng_convert(dataList[3]))[0]
-           gcj02_lat = wgs84_gcj02(lat_lng_convert(dataList[5]),lat_lng_convert(dataList[3]))[1]
-
+           gcj02_lng = wgs84_gcj02(dataList[5],dataList[3])[0]
+           gcj02_lat = wgs84_gcj02(dataList[5],dataList[3])[1]
+  
            url = "http://127.0.0.1:8080/api/status-info"
            data = {"label":"gps","lat":gcj02_lat,"lng":gcj02_lng}
            headers = {'content-type': 'application/json','charset': 'utf-8'}
