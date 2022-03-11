@@ -4,10 +4,11 @@ import json
 import requests 
 import math
 
-pi = 3.141592653589793234
+
 
 def lng_lat_algorithm(gps_lng, gps_lat):
-
+    
+    pi = 3.141592653589793234
     def lng_lat_convert(lng_lat_data):
         lng_lat_data = float(lng_lat_data) / 100.0
         lng_lat_data = int(lng_lat_data) + (lng_lat_data - int(lng_lat_data)) * 100.0 / 60.0 
@@ -42,21 +43,21 @@ def lng_lat_algorithm(gps_lng, gps_lat):
 
     return wgs84_gcj02(gps_lng, gps_lat)
 
-ser = serial.Serial("/dev/ttyS0", 9600)
-while(True):
-        gpsList = str(ser.readline())[2:][:-3].split(',')
-        if '$GNRMC' in gpsList and gpsList[2] == "A":
-            try:
-               print(gpsList)
-               gcj02_lng = lng_lat_algorithm(gpsList[5],gpsList[3])[0]
-               gcj02_lat = lng_lat_algorithm(gpsList[5],gpsList[3])[1]
-               speed = str(round((float(gpsList[7]) * 1.852),2)) + "km/h"
-               url = "http://127.0.0.1:8080/api/status-info"
-               data = {"label":"gps","lng":gcj02_lng,"lat":gcj02_lat}
-               headers = {'content-type': 'application/json','charset': 'utf-8'}
-               res = requests.post(url,data=json.dumps(data),headers=headers)
-               data = {"label":"速度","value":speed,"color":"green"}
-               res = requests.post(url,data=json.dumps(data),headers=headers)
+def postGPS():
+        ser = serial.Serial("/dev/ttyS0", 9600)
+        dataList = str(ser.readline())[2:][:-3].split(',')
+        if '$GNRMC' in dataList and dataList[2] == "A":
+            print(dataList)
+            gcj02_lng = lng_lat_algorithm(dataList[5],dataList[3])[0]
+            gcj02_lat = lng_lat_algorithm(dataList[5],dataList[3])[1]
+            speed = str(round((float(dataList[7]) * 1.852),2)) + "km/h"
+            url = "http://127.0.0.1:8080/api/status-info"
+            data = {"label":"gps","lng":gcj02_lng,"lat":gcj02_lat}
+            headers = {'content-type': 'application/json','charset': 'utf-8'}
+            res = requests.post(url,data=json.dumps(data),headers=headers)
+            data = {"label":"速度","value":speed,"color":"green"}
+            res = requests.post(url,data=json.dumps(data),headers=headers)
 
-            except:
-               pass
+
+while(True):
+    postGPS()
