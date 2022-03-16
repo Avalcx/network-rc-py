@@ -19,14 +19,14 @@ class GPS_Algorithm(object):
         lng_lat_data = int(lng_lat_data) + (lng_lat_data - int(lng_lat_data)) * 100.0 / 60.0 
         return lng_lat_data  
 
-    def transformlat(self,lng, lat):
+    def transformlat(self,lng,lat):
         r = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat + 0.2 * math.sqrt(math.fabs(lng))
         r += (20.0 * math.sin(6.0 * lng * self.pi) + 20.0 * math.sin(2.0 * lng * self.pi)) * 2.0 / 3.0
         r += (20.0 * math.sin(lat * self.pi) + 40.0 * math.sin(lat / 3.0 * self.pi)) * 2.0 / 3.0
         r += (160.0 * math.sin(lat / 12.0 * self.pi) + 320 * math.sin(lat * self.pi / 30.0)) * 2.0 / 3.0
         return r
 
-    def transformlng(self,lng, lat):
+    def transformlng(self,lng,lat):
         r = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * math.sqrt(math.fabs(lng))
         r += (20.0 * math.sin(6.0 * lng * self.pi) + 20.0 * math.sin(2.0 * lng * self.pi)) * 2.0 / 3.0
         r += (20.0 * math.sin(lng * self.pi) + 40.0 * math.sin(lng / 3.0 * self.pi)) * 2.0 / 3.0
@@ -57,18 +57,21 @@ class GPS_Algorithm(object):
 
 class PostInfo(object):
 
-    def __init__(self,Lng,Lat,Speed):
-        self.lng = Lng
-        self.lat = Lat
-        self.speed = Speed
+    def __init__(self):
+        self.lng = None
+        self.lat = None
+        self.speed = None
 
-    def Status(self):
+    def Status(self,Speed):
+        self.speed = Speed
         url = "http://127.0.0.1:8080/api/status-info"
         data = {"color":"green","label":"速度","value":self.speed}
         headers = {'content-type': 'application/json','charset': 'utf-8'}
         res = requests.post(url,data=json.dumps(data),headers=headers)
 
-    def GPS(self):
+    def GPS(self,Lng,Lat):
+        self.lng = Lng
+        self.lat = Lat
         url = "http://127.0.0.1:8080/api/status-info"
         data = {"label":"gps","lng":self.lng,"lat":self.lat}
         headers = {'content-type': 'application/json','charset': 'utf-8'}
@@ -115,6 +118,6 @@ while True:
             lat = gps.wgs84_gcj02()[1]
             speed = str(round((float(dataList[7]) * 1.852),2)) + "km/h"
             print(lng,lat)
-            post = PostInfo(lng,lat,speed)
-            post.Status()
-            post.GPS()
+            post = PostInfo()
+            post.Status(speed)
+            post.GPS(lng,lat)
