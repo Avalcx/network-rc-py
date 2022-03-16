@@ -98,7 +98,6 @@ def setL76x():
     L76X_Send_Command(ser,'$PMTK220,800')
     return ser
 
-
 #ser=setL76x()
 
 #开启pi的硬件串口，关闭软串口，方法：
