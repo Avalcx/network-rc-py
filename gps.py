@@ -106,7 +106,7 @@ def setL76x():
     # P6 Serial Port →→→→
     # 1.No  2.Yes →→→→
     # reboot
-
+    
 ser = serial.Serial("/dev/ttyS0",9600)
 
 while True:
