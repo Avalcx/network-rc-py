@@ -76,7 +76,6 @@ class PostInfo(object):
 
 
 def setL76x():
-
     def L76X_Send_Command(ser,data):
         Temp = '0123456789ABCDEF*'
         Check = ord(data[1]) 
