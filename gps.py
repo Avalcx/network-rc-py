@@ -6,7 +6,7 @@ import json
 import serial
 import re
 
-class GPS_Algorithm(object):
+class GPS(object):
     pi = 3.141592653589793234
     r_pi = pi * 3000.0 / 180.0
 
@@ -113,7 +113,7 @@ ser = serial.Serial("/dev/ttyS0",9600)
 while True:
         dataList = re.sub('\r|\n','',ser.readline().decode(encoding="utf8",errors="ignore")).split(',')
         if '$GNRMC' in dataList and dataList[2] == "A":
-            gps = GPS_Algorithm(dataList[5],dataList[3])
+            gps = GPS(dataList[5],dataList[3])
             lng = gps.wgs84_gcj02()[0]
             lat = gps.wgs84_gcj02()[1]
             speed = str(round((float(dataList[7]) * 1.852),2)) + "km/h"
