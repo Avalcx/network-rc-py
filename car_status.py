@@ -1,8 +1,13 @@
+'''
+sudo pip3 install adafruit-circuitpython-ads1x15
+sudo pip3 install board
+'''
+
 import time
 import board
 import busio
-import smbus
-import struct
+#import smbus
+#import struct
 import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 import requests
@@ -24,14 +29,14 @@ def readADS1115(PIN):
         chan = AnalogIn(ads,ADS.P3)  
     voltage = float('%0.2f'%chan.voltage)
     return voltage
-
+'''
 def readUPS(bus):
     address = 0x36
     read = bus.read_word_data(address, 0X04)
     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
     capacity = swapped/256
     return capacity
-
+'''
 def postStatus(Color,Label,Value):
 
     url = "http://127.0.0.1:8080/api/status-info"
