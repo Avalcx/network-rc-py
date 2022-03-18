@@ -9,7 +9,6 @@ import requests
 import json
 import os
 
-
 def readADS1115(PIN):
     
     pin = PIN
@@ -23,8 +22,6 @@ def readADS1115(PIN):
         chan = AnalogIn(ads,ADS.P2)
     elif pin == 3: 
         chan = AnalogIn(ads,ADS.P3)  
-
-    chan = chan
     voltage = float('%0.2f'%chan.voltage)
     return voltage
 
