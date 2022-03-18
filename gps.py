@@ -1,3 +1,12 @@
+'''
+开启pi的硬件串口，关闭软串口，方法：
+   raspi-config →→→→
+   3-Interface Options →→→→
+   P6 Serial Port →→→→
+   1.No  2.Yes →→→→
+   reboot
+
+'''
 import time
 import os
 import math
@@ -100,15 +109,7 @@ def setL76x():
 
 #ser=setL76x()
 
-#开启pi的硬件串口，关闭软串口，方法：
-    # raspi-config →→→→
-    # 3-Interface Options →→→→
-    # P6 Serial Port →→→→
-    # 1.No  2.Yes →→→→
-    # reboot
-    
 ser = serial.Serial("/dev/ttyS0",9600)
-
 while True:
         dataList = re.sub('\r|\n','',ser.readline().decode(encoding="utf8",errors="ignore")).split(',')
         if '$GNRMC' in dataList and dataList[2] == "A":
