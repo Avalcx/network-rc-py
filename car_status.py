@@ -13,12 +13,19 @@ import os
 def readADS1115(PIN):
     
     pin = PIN
-    chan = "chan" + str(pin)
-    chanPin = "ADS.P" + str(pin)
     i2c = busio.I2C(board.SCL, board.SDA)
     ads = ADS.ADS1015(i2c)
-    chan = AnalogIn(ads, chanPin)
-    voltage = float('%0.2f'%(chan.voltage * 5))
+    if pin == 0:
+        chan = AnalogIn(ads,ADS.P0)
+    elif pin == 1:
+        chan = AnalogIn(ads,ADS.P1)
+    elif pin == 2:
+        chan = AnalogIn(ads,ADS.P2)
+    elif pin == 3: 
+        chan = AnalogIn(ads,ADS.P3)  
+
+    chan = chan
+    voltage = float('%0.2f'%chan.voltage)
     return voltage
 
 def readUPS(bus):
