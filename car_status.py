@@ -27,7 +27,7 @@ def readADS1115(PIN):
         chan = AnalogIn(ads,ADS.P2)
     elif pin == 3: 
         chan = AnalogIn(ads,ADS.P3)  
-    voltage = float('%0.2f'%chan.voltage)
+    voltage = chan.voltage
     return voltage
 '''
 def readUPS(bus):
@@ -56,7 +56,7 @@ def colorStatus(value,Green,Red):
 
 while True:
      try:
-        voltage = readADS1115(PIN=0)
+        voltage = float('%.2f'%(readADS1115(PIN=0) * 5))
         if voltage == 0:
            continue
         Color = colorStatus(voltage,10.2,9)
@@ -65,7 +65,7 @@ while True:
      except:
         postStatus("red","电压","异常")
         pass
-     
+     '''
      try:
         bus = smbus.SMBus(1)
         upsCapacity = readUPS(bus)
@@ -75,7 +75,7 @@ while True:
      except:
         postStatus("red","UPS","异常")
         pass
-    
+    '''
      try:
         temp = float(os.popen("vcgencmd measure_temp|sed 's/[^0-9,.]//g'").read())            
         Color = colorStatus(100-temp,60,40)

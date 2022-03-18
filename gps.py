@@ -1,5 +1,5 @@
 '''
-开启pi的硬件串口，关闭软串口，方法：
+开启pi的硬件串口,关闭软串口,方法:
    raspi-config →→→→
    3-Interface Options →→→→
    P6 Serial Port →→→→
