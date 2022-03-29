@@ -79,7 +79,7 @@ while True:
      try:
         temp = float(os.popen("vcgencmd measure_temp|sed 's/[^0-9,.]//g'").read())            
         Color = colorStatus(100-temp,60,40)
-        temp = str(temp) + "'C"
+        temp = str(temp) + "℃"
         postStatus(Color,"温度",temp)
      except:
          postStatus("red","温度","异常")
